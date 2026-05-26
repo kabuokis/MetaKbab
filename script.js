@@ -31,6 +31,7 @@ const downloadBtn  = document.getElementById('downloadBtn');
 const progressWrap = document.getElementById('progressWrap');
 const progressBar  = document.getElementById('progressBar');
 const progressLabel= document.getElementById('progressLabel');
+const currentYear  = document.getElementById('currentYear');
 
 // ── Theme ──────────────────────────────────────────────────────────────────
 function initTheme() {
@@ -391,3 +392,4 @@ function formatBytes(bytes) {
 
 // ── Init ───────────────────────────────────────────────────────────────────
 initTheme();
+if (currentYear) currentYear.textContent = new Date().getFullYear();
