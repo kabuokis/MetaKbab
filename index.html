@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MetaKbab — Strip Your Photo Metadata</title>
+  <meta name="description" content="Remove, randomize, or override photo metadata entirely in your browser. Nothing ever leaves your device." />
+  <meta property="og:title" content="MetaKbab" />
+  <meta property="og:description" content="Strip photo metadata locally. No uploads. No server. Ever." />
+  <meta property="og:url" content="https://meta.kbab.lt" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-inner">
+      <a class="logo" href="#">
+        <span class="logo-icon">🥙</span>
+        <span class="logo-text">Meta<strong>Kbab</strong></span>
+      </a>
+      <nav class="header-nav">
+        <a href="#how-it-works">How it works</a>
+        <a href="https://github.com/kabuokis/MetaKbab" target="_blank" rel="noopener">GitHub</a>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <span class="theme-icon-sun">☀️</span>
+          <span class="theme-icon-moon">🌙</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="trust-badge">
+        <span class="pulse-dot"></span>
+        100% local — your photos never leave this device
+      </div>
+      <h1 class="hero-title">Slice the metadata<br /><em>off your photos.</em></h1>
+      <p class="hero-sub">GPS coordinates, camera model, timestamps, software fingerprints — all gone. Right here, right now, in your browser.</p>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">0</span><span class="stat-label">bytes uploaded</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num">∞</span><span class="stat-label">photos supported</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num">MIT</span><span class="stat-label">open source</span></div>
+      </div>
+    </div>
+    <div class="hero-grain"></div>
+  </section>
+
+  <!-- MAIN TOOL -->
+  <main class="tool-section">
+    <div class="container">
+
+      <!-- UPLOAD ZONE -->
+      <div class="upload-zone" id="uploadZone">
+        <input type="file" id="fileInput" multiple accept="image/jpeg,image/jpg,image/png,image/webp,image/tiff" hidden />
+        <div class="upload-icon">📁</div>
+        <p class="upload-title">Drop your photos here</p>
+        <p class="upload-sub">JPG, PNG, WebP, TIFF · Drag & drop or click to browse</p>
+        <button class="btn btn-outline" id="browseBtn">Browse files</button>
+      </div>
+
+      <!-- OPTIONS PANEL -->
+      <div class="options-panel" id="optionsPanel" style="display:none">
+        <h2 class="panel-title">Cleaning options</h2>
+        <div class="options-grid">
+
+          <label class="option-card" data-mode="strip">
+            <input type="radio" name="cleanMode" value="strip" checked />
+            <div class="option-card-inner">
+              <div class="option-icon">🧹</div>
+              <div class="option-text">
+                <strong>Strip all</strong>
+                <span>Completely remove all metadata. Nothing remains.</span>
+              </div>
+              <div class="option-check">✓</div>
+            </div>
+          </label>
+
+          <label class="option-card" data-mode="randomize">
+            <input type="radio" name="cleanMode" value="randomize" />
+            <div class="option-card-inner">
+              <div class="option-icon">🎲</div>
+              <div class="option-text">
+                <strong>Randomize</strong>
+                <span>Replace metadata with convincing fake random values.</span>
+              </div>
+              <div class="option-check">✓</div>
+            </div>
+          </label>
+
+          <label class="option-card" data-mode="custom">
+            <input type="radio" name="cleanMode" value="custom" />
+            <div class="option-card-inner">
+              <div class="option-icon">✏️</div>
+              <div class="option-text">
+                <strong>Custom override</strong>
+                <span>Set your own fake metadata values manually.</span>
+              </div>
+              <div class="option-check">✓</div>
+            </div>
+          </label>
+
+          <label class="option-card" data-mode="keep">
+            <input type="radio" name="cleanMode" value="keep" />
+            <div class="option-card-inner">
+              <div class="option-icon">🔒</div>
+              <div class="option-text">
+                <strong>Strip GPS only</strong>
+                <span>Remove only location data, keep other tags.</span>
+              </div>
+              <div class="option-check">✓</div>
+            </div>
+          </label>
+
+        </div>
+
+        <!-- CUSTOM FIELDS -->
+        <div class="custom-fields" id="customFields" style="display:none">
+          <h3 class="custom-fields-title">Custom metadata values</h3>
+          <div class="custom-grid">
+            <div class="field-group">
+              <label>Camera make</label>
+              <input type="text" id="customMake" placeholder="e.g. Sony" />
+            </div>
+            <div class="field-group">
+              <label>Camera model</label>
+              <input type="text" id="customModel" placeholder="e.g. A7 IV" />
+            </div>
+            <div class="field-group">
+              <label>Author / Artist</label>
+              <input type="text" id="customArtist" placeholder="e.g. John Doe" />
+            </div>
+            <div class="field-group">
+              <label>Date taken</label>
+              <input type="datetime-local" id="customDate" />
+            </div>
+            <div class="field-group">
+              <label>GPS Latitude</label>
+              <input type="text" id="customLat" placeholder="e.g. 48.8566" />
+            </div>
+            <div class="field-group">
+              <label>GPS Longitude</label>
+              <input type="text" id="customLng" placeholder="e.g. 2.3522" />
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- PHOTO QUEUE -->
+      <div class="photo-queue" id="photoQueue" style="display:none">
+        <div class="queue-header">
+          <h2 class="panel-title">Photo queue <span class="queue-count" id="queueCount">0</span></h2>
+          <button class="btn btn-ghost" id="clearAllBtn">Clear all</button>
+        </div>
+        <div class="photo-grid" id="photoGrid"></div>
+      </div>
+
+      <!-- ACTION BAR -->
+      <div class="action-bar" id="actionBar" style="display:none">
+        <div class="action-bar-inner">
+          <div class="action-info">
+            <span id="actionSummary">Ready to clean</span>
+          </div>
+          <div class="action-buttons">
+            <button class="btn btn-primary" id="cleanBtn">
+              <span class="btn-icon">🥙</span>
+              Start Cleaning
+            </button>
+            <button class="btn btn-success" id="downloadBtn" style="display:none">
+              <span class="btn-icon">⬇️</span>
+              Download ZIP
+            </button>
+          </div>
+        </div>
+        <div class="progress-bar-wrap" id="progressWrap" style="display:none">
+          <div class="progress-bar" id="progressBar"></div>
+          <span class="progress-label" id="progressLabel">0%</span>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-section" id="how-it-works">
+    <div class="container">
+      <h2 class="section-title">How it works</h2>
+      <div class="steps-grid">
+        <div class="step">
+          <div class="step-num">01</div>
+          <h3>Upload locally</h3>
+          <p>Photos are loaded directly into your browser memory using the File API. Nothing is sent anywhere.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <h3>Choose your clean</h3>
+          <p>Strip everything, randomize with fake data, set custom values, or just remove GPS. Your call.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <h3>Re-drawn, not edited</h3>
+          <p>Each image is redrawn onto a canvas element. The output is a brand-new image file with zero metadata.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">04</div>
+          <h3>Download & done</h3>
+          <p>Get all cleaned photos in a single ZIP file. Fast, private, and 100% yours.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <span class="logo-icon">🥙</span>
+          <span class="logo-text">Meta<strong>Kbab</strong></span>
+          <p>Open source · MIT License · Built with privacy in mind</p>
+        </div>
+        <div class="footer-links">
+          <a href="https://github.com/kabuokis/MetaKbab" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://github.com/kabuokis/MetaKbab/blob/main/LICENSE" target="_blank" rel="noopener">License</a>
+          <a href="https://github.com/kabuokis/MetaKbab/issues" target="_blank" rel="noopener">Report issue</a>
+        </div>
+      </div>
+      <p class="footer-copy">© 2025 MetaKbab contributors — meta.kbab.lt</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
